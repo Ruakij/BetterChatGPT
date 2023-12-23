@@ -177,9 +177,12 @@ const useSubmit = () => {
         };
 
         let title = (await generateTitle([message])).trim();
-        if (title.startsWith('"') && title.endsWith('"')) {
-          title = title.slice(1, -1);
+        let titleMatch = title.match(/(\*\*|\*|\-|'|`|")(.+?)(\1|$)/)
+        if (titleMatch) {
+          title = titleMatch[2];
         }
+        title = title.trim();
+
         const updatedChats: ChatInterface[] = JSON.parse(
           JSON.stringify(useStore.getState().chats)
         );
