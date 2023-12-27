@@ -46,40 +46,63 @@ const countTokens = (messages: MessageInterface[], model: ModelOptions) => {
 export const limitMessageTokens = (
   messages: MessageInterface[],
   limit: number = 4096,
-  model: ModelOptions
+  model: ModelOptions,
+  persistSystemMessageCount: number = 1, // Number of system messages to keep
+  persistSystemMessageFirst: boolean = true // Whether to keep the first system message
 ): MessageInterface[] => {
   const limitedMessages: MessageInterface[] = [];
   let tokenCount = 0;
 
-  const isSystemFirstMessage = messages[0]?.role === 'system';
-  let retainSystemMessage = false;
-
-  // Check if the first message is a system message and if it fits within the token limit
-  if (isSystemFirstMessage) {
-    const systemTokenCount = countTokens([messages[0]], model);
-    if (systemTokenCount < limit) {
-      tokenCount += systemTokenCount;
-      retainSystemMessage = true;
-    }
-  }
-
   // Iterate through messages in reverse order, adding them to the limitedMessages array
-  // until the token limit is reached (excludes first message)
-  for (let i = messages.length - 1; i >= 1; i--) {
+  // until the token limit is reached
+  for (let i = messages.length - 1; i >= 0; i--) {
     const count = countTokens([messages[i]], model);
     if (count + tokenCount > limit) break;
     tokenCount += count;
     limitedMessages.unshift({ ...messages[i] });
   }
 
-  // Process first message
-  if (retainSystemMessage) {
-    // Insert the system message in the third position from the end
-    limitedMessages.splice(-3, 0, { ...messages[0] });
-  } else if (!isSystemFirstMessage) {
-    // Check if the first message (non-system) can fit within the limit
-    const firstMessageTokenCount = countTokens([messages[0]], model);
-    if (firstMessageTokenCount + tokenCount < limit) {
+  // Check if persistSystemMessageCount is set
+  if (persistSystemMessageCount > 0) {
+    // Find the system messages that are not in the limitedMessages array
+    const systemMessages = messages
+      .slice(0, messages.length - limitedMessages.length)
+      .filter((message) => message.role === 'system');
+
+    // Add system messages from the back until the persistSystemMessageCount is reached
+    // or the token limit is exceeded
+    for (let i = systemMessages.length - 1; i >= 0; i--) {
+      const count = countTokens([systemMessages[i]], model);
+      if (count + tokenCount > limit) {
+        // Remove non-system messages from the back until the system message fits
+        while (limitedMessages.length > 0 && count + tokenCount > limit) {
+          const removed = limitedMessages.pop() as MessageInterface;
+          tokenCount -= countTokens([removed], model);
+        }
+      }
+      tokenCount += count;
+      limitedMessages.unshift({ ...systemMessages[i] });
+      persistSystemMessageCount--;
+      if (persistSystemMessageCount === 0) break;
+    }
+  }
+
+  // Check if persistSystemMessageFirst is true
+  if (persistSystemMessageFirst) {
+    // Check if the first message is a system message and if it is not in the limitedMessages array
+    const isSystemFirstMessage = messages[0]?.role === 'system';
+    const isFirstMessageIncluded = messages[0] === limitedMessages[0];
+    if (isSystemFirstMessage && !isFirstMessageIncluded) {
+      // Check if the first message can fit within the limit
+      const count = countTokens([messages[0]], model);
+      if (count + tokenCount > limit) {
+        // Remove non-system messages from the back until the first message fits
+        while (limitedMessages.length > 0 && count + tokenCount > limit) {
+          const removed = limitedMessages.pop() as MessageInterface;
+          tokenCount -= countTokens([removed], model);
+        }
+      }
+      tokenCount += count;
       limitedMessages.unshift({ ...messages[0] });
     }
   }
