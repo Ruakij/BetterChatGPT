@@ -52,6 +52,7 @@ export const limitMessageTokens = (
 ): MessageInterface[] => {
   const limitedMessages: MessageInterface[] = [];
   let tokenCount = 0;
+  let systemMessageCount = 0; // variable to track how many system messages have been added
 
   // Iterate through messages in reverse order, adding them to the limitedMessages array
   // until the token limit is reached
@@ -60,9 +61,11 @@ export const limitMessageTokens = (
     if (count + tokenCount > limit) break;
     tokenCount += count;
     limitedMessages.unshift({ ...messages[i] });
+    if (messages[i].role === 'system') systemMessageCount++; // increment system message count if the message is from the system
   }
 
   // Check if persistSystemMessageCount is set
+  persistSystemMessageCount -= systemMessageCount
   if (persistSystemMessageCount > 0) {
     // Find the system messages that are not in the limitedMessages array
     const systemMessages = messages
