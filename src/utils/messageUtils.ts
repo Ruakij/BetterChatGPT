@@ -80,7 +80,9 @@ export const limitMessageTokens = (
         // Remove non-system messages from the back until the system message fits
         while (limitedMessages.length > 0 && count + tokenCount > limit) {
           const removed = limitedMessages.pop() as MessageInterface;
-          tokenCount -= countTokens([removed], model);
+          if (removed.role !== 'system') { // only remove non-system messages
+            tokenCount -= countTokens([removed], model);
+          }
         }
       }
       tokenCount += count;
@@ -102,7 +104,9 @@ export const limitMessageTokens = (
         // Remove non-system messages from the back until the first message fits
         while (limitedMessages.length > 0 && count + tokenCount > limit) {
           const removed = limitedMessages.pop() as MessageInterface;
-          tokenCount -= countTokens([removed], model);
+          if (removed.role !== 'system') { // only remove non-system messages
+            tokenCount -= countTokens([removed], model);
+          }
         }
       }
       tokenCount += count;
