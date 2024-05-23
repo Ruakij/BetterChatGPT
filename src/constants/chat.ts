@@ -44,7 +44,6 @@ export const modelMaxToken = {
   'gpt-4-32k-0613': 32768,
   'gpt-4-1106-preview': 128000,
   'gpt-4-0125-preview': 128000,
-  'gpt-4-turbo': 128000,
   'gpt-4-turbo-2024-04-09': 128000,
   'gpt-4o': 128000,
   'gpt-4o-2024-05-13': 128000,
@@ -80,10 +79,6 @@ export const modelCost = {
     completion: { price: 0.03, unit: 1000 },
   },
   'gpt-4-0125-preview': {
-    prompt: { price: 0.01, unit: 1000 },
-    completion: { price: 0.03, unit: 1000 },
-  },
-  'gpt-4-turbo': {
     prompt: { price: 0.01, unit: 1000 },
     completion: { price: 0.03, unit: 1000 },
   },
