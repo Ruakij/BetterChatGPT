@@ -14,7 +14,7 @@ const dateString =
 export const _defaultSystemMessage =
   import.meta.env.VITE_DEFAULT_SYSTEM_MESSAGE ??
   `You are ChatGPT, a large language model trained by OpenAI.
-Carefully heed the user's instructions. 
+Carefully heed the user's instructions.
 Respond using Markdown.`;
 
 export const modelOptions: ModelOptions[] = [
@@ -28,13 +28,18 @@ export const modelOptions: ModelOptions[] = [
   'gpt-4-0125-preview',
   'gpt-4-turbo',
   'gpt-4-turbo-2024-04-09',
-  'gpt-4o',
-  'gpt-4o-2024-05-13',
   'gpt-4o-mini',
   'gpt-4o-mini-2024-07-18',
+  'gpt-4o',
+  'gpt-4o-2024-05-13',
+  'gpt-4o-2024-08-06',
+  'gpt-4o-2024-11-20',
+  'chatgpt-4o-latest',
   'o1',
   'o1-mini',
+  'o1-mini-2024-09-12',
   'o1-preview',
+  'o1-preview-2024-09-12',
   // 'gpt-3.5-turbo-0301',
   // 'gpt-4-0314',
   // 'gpt-4-32k-0314',
@@ -60,14 +65,18 @@ export const modelMaxToken = {
   'gpt-4-0125-preview': 128000,
   'gpt-4-turbo': 128000,
   'gpt-4-turbo-2024-04-09': 128000,
-  'gpt-4o': 128000,
-  'gpt-4o-2024-05-13': 128000,
   'gpt-4o-mini': 128000,
   'gpt-4o-mini-2024-07-18': 128000,
-  'o1': 200000,
+  'gpt-4o': 128000,
+  'gpt-4o-2024-05-13': 128000,
+  'gpt-4o-2024-08-06': 128000,
+  'gpt-4o-2024-11-20': 128000,
+  'chatgpt-4o-latest': 128000,
+  'o1': 128000,
   'o1-mini': 128000,
   'o1-mini-2024-09-12': 128000,
-  'o1-preview': 128000
+  'o1-preview': 128000,
+  'o1-preview-2024-09-12': 128000,
 };
 
 export const modelCost = {
@@ -139,6 +148,14 @@ export const modelCost = {
     prompt: { price: 0.01, unit: 1000 },
     completion: { price: 0.03, unit: 1000 },
   },
+  'gpt-4o-mini': {
+    prompt: { price: 0.00015, unit: 1000 },
+    completion: { price: 0.0006, unit: 1000 },
+  },
+  'gpt-4o-mini-2024-07-18': {
+    prompt: { price: 0.00015, unit: 1000 },
+    completion: { price: 0.0006, unit: 1000 },
+  },
   'gpt-4o': {
     prompt: { price: 2.5, unit: 1000000 },
     completion: { price: 10, unit: 1000000 },
@@ -147,26 +164,38 @@ export const modelCost = {
     prompt: { price: 0.005, unit: 1000 },
     completion: { price: 0.015, unit: 1000 },
   },
-  'gpt-4o-mini': {
-    prompt: { price: 0.000150, unit: 1000 },
-    completion: { price: 0.000600, unit: 1000 },
+  'gpt-4o-2024-08-06': {
+    prompt: { price: 0.0025, unit: 1000 },
+    completion: { price: 0.01, unit: 1000 },
   },
-  'gpt-4o-mini-2024-07-18': {
-    prompt: { price: 0.000150, unit: 1000 },
-    completion: { price: 0.000600, unit: 1000 },
+  'gpt-4o-2024-11-20': {
+    prompt: { price: 0.0025, unit: 1000 },
+    completion: { price: 0.01, unit: 1000 },
+  },
+  'chatgpt-4o-latest': {
+    prompt: { price: 0.0025, unit: 1000 },
+    completion: { price: 0.01, unit: 1000 },
   },
   'o1': {
-    prompt: { price: 15, unit: 1000000 },
-    completion: { price: 60, unit: 1000000 },
-  },
-  'o1-preview': {
-    prompt: { price: 15, unit: 1000000 },
-    completion: { price: 60, unit: 1000000 },
+    prompt: { price: 0.015, unit: 1000 },
+    completion: { price: 0.06, unit: 1000 },
   },
   'o1-mini': {
-    prompt: { price: 3, unit: 1000000 },
-    completion: { price: 12, unit: 1000000 },
-  }
+    prompt: { price: 0.003, unit: 1000 },
+    completion: { price: 0.012, unit: 1000 },
+  },
+  'o1-mini-2024-09-12': {
+    prompt: { price: 0.003, unit: 1000 },
+    completion: { price: 0.012, unit: 1000 },
+  },
+  'o1-preview': {
+    prompt: { price: 0.015, unit: 1000 },
+    completion: { price: 0.06, unit: 1000 },
+  },
+  'o1-preview-2024-09-12': {
+    prompt: { price: 0.015, unit: 1000 },
+    completion: { price: 0.06, unit: 1000 },
+  },
 };
 
 export const defaultUserMaxToken = 4000;
