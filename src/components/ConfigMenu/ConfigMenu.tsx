@@ -2,9 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import useStore from '@store/store';
 import { useTranslation } from 'react-i18next';
 import PopupModal from '@components/PopupModal';
-import { ConfigInterface, ModelOptions } from '@type/chat';
+import { ConfigInterface, ModelOptions, deprecatedModels } from '@type/chat';
 import DownChevronArrow from '@icon/DownChevronArrow';
 import { modelMaxToken, modelOptions } from '@constants/chat';
+
+const isDatedModel = (model: string) => {
+  return model.match(/\d{4}-\d{2}-\d{2}/) !== null;
+};
 
 const ConfigMenu = ({
   setIsModalOpen,
@@ -79,6 +83,19 @@ export const ModelSelector = ({
   _setModel: React.Dispatch<React.SetStateAction<ModelOptions>>;
 }) => {
   const [dropDown, setDropDown] = useState<boolean>(false);
+  const { t } = useTranslation('model');
+
+  const getModelStyle = (m: string) => {
+    if (deprecatedModels.has(m)) return 'text-gray-500 dark:text-gray-400';
+    if (isDatedModel(m)) return 'text-indigo-500 dark:text-indigo-400';
+    return 'text-blue-600 dark:text-blue-500';
+  };
+
+  const getTagStyle = (m: string) => {
+    if (deprecatedModels.has(m)) return 'text-gray-500 dark:text-gray-400';
+    if (isDatedModel(m)) return 'text-indigo-500 dark:text-indigo-400';
+    return '';
+  };
 
   return (
     <div className='mb-4'>
@@ -88,14 +105,18 @@ export const ModelSelector = ({
         onClick={() => setDropDown((prev) => !prev)}
         aria-label='model'
       >
-        {_model}
+        <span className={getModelStyle(_model)}>{_model}</span>
+        {deprecatedModels.has(_model) && (
+          <span className='text-gray-500 dark:text-gray-400 text-xs'>(deprecated)</span>
+        )}
+        {!deprecatedModels.has(_model) && isDatedModel(_model) && (
+          <span className='text-indigo-500 dark:text-indigo-400 text-xs'>(specific)</span>
+        )}
         <DownChevronArrow />
       </button>
       <div
         id='dropdown'
-        className={`${
-          dropDown ? '' : 'hidden'
-        } absolute top-100 bottom-100 z-10 bg-white rounded-lg shadow-xl border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group dark:bg-gray-800 opacity-90`}
+        className={`${dropDown ? '' : 'hidden'} absolute top-100 bottom-100 z-10 bg-white rounded-lg shadow-xl border-b border-black/10 dark:border-gray-900/50 text-gray-800 dark:text-gray-100 group dark:bg-gray-800 opacity-90`}
       >
         <ul
           className='text-sm text-gray-700 dark:text-gray-200 p-0 m-0'
@@ -103,7 +124,7 @@ export const ModelSelector = ({
         >
           {modelOptions.map((m) => (
             <li
-              className='px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer'
+              className={`px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer flex items-center justify-between ${getModelStyle(m)}`}
               onClick={() => {
                 _setModel(m);
                 setDropDown(false);
@@ -111,6 +132,12 @@ export const ModelSelector = ({
               key={m}
             >
               {m}
+              {deprecatedModels.has(m) && (
+                <span className='text-gray-500 dark:text-gray-400 text-xs ml-2'>(deprecated)</span>
+              )}
+              {!deprecatedModels.has(m) && isDatedModel(m) && (
+                <span className='text-indigo-500 dark:text-indigo-400 text-xs ml-2'>(specific)</span>
+              )}
             </li>
           ))}
         </ul>
