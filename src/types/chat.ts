@@ -66,6 +66,7 @@ export const deprecatedModels = new Set<string>([
 
 export type ModelOptions =
   // Base models without dates
+  | 'o3-mini'
   | 'gpt-4o'
   | 'gpt-4o-mini'
   | 'o1'

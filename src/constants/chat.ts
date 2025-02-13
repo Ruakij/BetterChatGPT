@@ -19,12 +19,12 @@ Respond using Markdown.`;
 
 export const modelOptions: ModelOptions[] = [
   // Base models without dates
+  'o3-mini',
   'gpt-4o',
   'gpt-4o-mini',
   'o1',
   'o1-mini',
   'o1-preview',
-  'chatgpt-4o-latest',
   // Models with dates
   'gpt-4o-2024-05-13',
   'gpt-4o-2024-08-06',
@@ -77,6 +77,7 @@ export const modelMaxToken = {
   'o1-mini-2024-09-12': 128000,
   'o1-preview': 128000,
   'o1-preview-2024-09-12': 128000,
+  'o3-mini': 200000
 };
 
 export const modelCost = {
@@ -195,6 +196,10 @@ export const modelCost = {
   'o1-preview-2024-09-12': {
     prompt: { price: 0.015, unit: 1000 },
     completion: { price: 0.06, unit: 1000 },
+  },
+  'o3-mini': {
+    prompt: { price: 1.10, unit: 1000000 },
+    completion: { price: 4.4, unit: 1000000 },
   },
 };
 
